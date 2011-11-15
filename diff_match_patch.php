@@ -1774,8 +1774,8 @@ class diff_match_patch {
 		}
 
 		// Add some padding on start of first diff.
-		$patch = $patches[0];
-		$diffs = $patch->diffs;
+		$patch = &$patches[0];
+		$diffs = &$patch->diffs;
 		if (count($diffs) == 0 || $diffs[0][0] != DIFF_EQUAL) {
 			// Add nullPadding equality.
 			array_unshift($diffs, array(DIFF_EQUAL, $nullPadding));
@@ -1794,8 +1794,8 @@ class diff_match_patch {
 		}
 
 		// Add some padding on end of last diff.
-		$patch = $patches[count($patches) - 1];
-		$diffs = $patch->diffs;
+		$patch = &$patches[count($patches) - 1];
+		$diffs = &$patch->diffs;
 		if ( count($diffs) == 0 || $diffs[ count($diffs) - 1][0] != DIFF_EQUAL) {
 			// Add nullPadding equality.
 			array_push($diffs, array(DIFF_EQUAL, $nullPadding) );
