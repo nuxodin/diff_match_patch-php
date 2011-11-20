@@ -489,11 +489,11 @@ class diff_match_patch {
 				if (isset ($v_map[$d][($x -1) . ',' . $y])) {
 					$x--;
 					if ($last_op === DIFF_DELETE) {
-						$path[0][1] = $text1[$x] . $path[0][1];
+						$path[0][1] = mb_substr($text1, $x, 1) . $path[0][1];
 					} else {
 						array_unshift($path, array (
 							DIFF_DELETE,
-							$text1[$x]
+							mb_substr($text1, $x, 1)
 						));
 					}
 					$last_op = DIFF_DELETE;
@@ -501,11 +501,11 @@ class diff_match_patch {
 				} elseif (isset ($v_map[$d][$x . ',' . ($y -1)])) {
 					$y--;
 					if ($last_op === DIFF_INSERT) {
-						$path[0][1] = $text2[$y] . $path[0][1];
+						$path[0][1] = mb_substr($text2, $y, 1) . $path[0][1];
 					} else {
 						array_unshift($path, array (
 							DIFF_INSERT,
-							$text2[$y]
+							mb_substr($text2, $y, 1)
 						));
 					}
 					$last_op = DIFF_INSERT;
@@ -517,11 +517,11 @@ class diff_match_patch {
 					//  throw new Error('No diagonal.  Can\'t happen. (diff_path1)');
 					//}
 					if ($last_op === DIFF_EQUAL) {
-						$path[0][1] = $text1[$x] . $path[0][1];
+						$path[0][1] = mb_substr($text1, $x, 1) . $path[0][1];
 					} else {
 						array_unshift($path, array (
 							DIFF_EQUAL,
-							$text1[$x]
+							mb_substr($text1, $x, 1)
 						));
 					}
 					$last_op = DIFF_EQUAL;
