@@ -604,12 +604,9 @@ class diff_match_patch {
 	 */
 	function diff_commonPrefix($text1, $text2) {
 		for ($i = 0; 1; $i++) {
-		        /*                                          // necessary?
 			$t1 = mb_substr($text1, $i, 1);
 			$t2 = mb_substr($text2, $i, 1);
 			if($t1==='' || $t2==='' || $t1 !== $t2 ){
-		        */
-		        if(!isset($text1[$i]) || !isset($text2[$i]) || $text1[$i] !== $text2[$i] ){
 				return $i;
 			}
 		}
