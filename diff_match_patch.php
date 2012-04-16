@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Diff Match and Patch
  *
