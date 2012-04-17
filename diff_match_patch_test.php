@@ -70,7 +70,7 @@ function runTests() {
 				);
 	foreach($tests as $test){
 		echo '<H3>' . $test . ':</H3>';
-		eval($test.'();');
+		$test();
 	}
 }
 
@@ -242,8 +242,8 @@ function testDiffLinesToChars() {
 		$charList[$x - 1] = mb_chr($x);
 	}
 	assertEquals($n, count($lineList) );
-	$lines = implode($lineList);
-	$chars = implode($charList);
+	$lines = implode('', $lineList);
+	$chars = implode('', $charList);
 	assertEquals($n, strlen($chars) );
 	array_unshift($lineList,'');
 	assertEquivalent(array($chars, '', $lineList), dmp()->diff_linesToChars($lines, ''));
@@ -264,8 +264,8 @@ function testDiffCharsToLines() {
 		$charList[$x - 1] = mb_chr($x);
 	}
 	assertEquals($n, count($lineList));
-	$lines = implode($lineList);
-	$chars = implode($charList);
+	$lines = implode('', $lineList);
+	$chars = implode('', $charList);
 	assertEquals($n, strlen($chars) );
 	array_unshift($lineList,'');
 	$diffs = array(array(DIFF_DELETE, $chars));
@@ -466,39 +466,39 @@ function testDiffDelta() {
 	// Generates error (19 != 20).
 
 	$Error = "Error expected";
-	global $lastExeption;
+	global $lastException;
 	try {
-	$res = dmp()->diff_fromDelta($text1."x", $delta);
-	if(	$lastExeption === 'Delta length (19) does not equal source text length (20).' ){
+		$res = dmp()->diff_fromDelta($text1."x", $delta);
+		if( $lastException === 'Delta length (19) does not equal source text length (20).' ){
 			assertEquivalent(null, null);
-	} else {
+		} else {
 			assertEquivalent($Error, $res);
-	}
-	} catch (Exeption $e) {
+		}
+	} catch (Exception $e) {
 		assertEquivalent(null, null);
 	}
 
 	// Generates error (19 != 18).
 	try {
-	$res = dmp()->diff_fromDelta( substr($text1,1), $delta);
-	if( $lastExeption === 'Delta length (19) does not equal source text length (18).' ){
+		$res = dmp()->diff_fromDelta( substr($text1,1), $delta);
+		if( $lastException === 'Delta length (19) does not equal source text length (18).' ){
 			assertEquivalent(null, null);
-	} else {
+		} else {
 			assertEquivalent($Error, $res);
-	}
-	} catch (Exeption $e) {
+		}
+	} catch (Exception $e) {
 		assertEquivalent(null, null);
 	}
 
 	// Generates error (%c3%xy invalid Unicode).
 	try {
 		$res = dmp()->diff_fromDelta("", "+%c3%xy");
-	if( $lastExeption === '' ){
+		if( $lastException === '' ){
 			assertEquivalent(null, null);
-	} else {
+		} else {
 			assertEquivalent($Error, $res);
-	}
-	} catch (Exeption $e) {
+		}
+	} catch (Exception $e) {
 		assertEquivalent(null, null);
 	}
 
@@ -755,15 +755,15 @@ function testPatchFromText() {
 	assertEquals("@@ -0,0 +1,3 @@\n+abc\n", $ps[0]->toString());
 
 	// Generates error.
-	global $lastExeption;
+	global $lastException;
 	try {
-	$res = dmp()->patch_fromText("Bad\nPatch\n");
-	if(	$lastExeption === 'Invalid patch mode "P" in: atch' ){
+		$res = dmp()->patch_fromText("Bad\nPatch\n");
+		if(	$lastException === 'Invalid patch mode "P" in: atch' ){
 			assertEquivalent(null, null);
-	} else {
+		} else {
 			assertEquivalent('Error expected', $res);
-	}
-	} catch (Exeption $e) {
+		}
+	} catch (Exception $e) {
 		assertEquivalent(null, null);
 	}
 }
