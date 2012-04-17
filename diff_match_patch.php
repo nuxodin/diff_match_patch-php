@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Diff Match and Patch
  *
@@ -60,17 +60,17 @@ class diff_match_patch {
 	 * Compute the number of bits in an int.
 	 * The normal answer for JavaScript is 32.
 	 * @return {number} Max bits
-	 
+
 	function getMaxBits() {
-	  var maxbits = 0;
-	  var oldi = 1;
-	  var newi = 2;
-	  while (oldi != newi) {
-	    maxbits++;
-	    oldi = newi;
-	    newi = newi << 1;
-	  }
-	  return maxbits;
+		var maxbits = 0;
+		var oldi = 1;
+		var newi = 2;
+		while (oldi != newi) {
+			maxbits++;
+			oldi = newi;
+			newi = newi << 1;
+		}
+		return maxbits;
 	}
 	// How many bits in a number?
 	this.Match_MaxBits = getMaxBits();
@@ -1266,7 +1266,7 @@ class diff_match_patch {
 							decodeURI($param)
 						);
 					} catch (Exeption $ex) {
-				          echo_Exception('Illegal escape in diff_fromDelta: ' . $param);
+						echo_Exception('Illegal escape in diff_fromDelta: ' . $param);
 						// Malformed URI sequence.
 					}
 					break;
@@ -1354,7 +1354,7 @@ class diff_match_patch {
 		// Highest score beyond which we give up.
 		$score_threshold = $this->Match_Threshold;
 
-		// Is there a nearby exact match? (speedup)		
+		// Is there a nearby exact match? (speedup)
 		$best_loc = mb_strpos($text, $pattern, $loc);
 		if ($best_loc !== false) {
 			$score_threshold = min($this->match_bitapScore(0, $best_loc, $pattern, $loc), $score_threshold);
@@ -1482,7 +1482,7 @@ class diff_match_patch {
 		$padding = 0;
 		while (mb_strpos($text, $pattern) !== mb_strrpos($text, $pattern) && mb_strlen($pattern) < Match_MaxBits - $this->Patch_Margin - $this->Patch_Margin ) {
 			$padding += $this->Patch_Margin;
-		    $pattern = mb_substr($text, max($patch->start2 - $padding,0), ($patch->start2 + $patch->length1 + $padding) - max($patch->start2 - $padding,0) );
+			$pattern = mb_substr($text, max($patch->start2 - $padding,0), ($patch->start2 + $patch->length1 + $padding) - max($patch->start2 - $padding,0) );
 		}
 		// Add one chunk for good luck.
 		$padding += $this->Patch_Margin;
@@ -1495,7 +1495,7 @@ class diff_match_patch {
 			));
 		}
 		// Add the suffix.
-  		$suffix = mb_substr($text, $patch->start2 + $patch->length1, ($patch->start2 + $patch->length1 + $padding) - ($patch->start2 + $patch->length1) );
+		$suffix = mb_substr($text, $patch->start2 + $patch->length1, ($patch->start2 + $patch->length1 + $padding) - ($patch->start2 + $patch->length1) );
 		if ($suffix!=='') {
 			array_push($patch->diffs, array (
 				DIFF_EQUAL,
@@ -1558,7 +1558,7 @@ class diff_match_patch {
 			$text1 = $a;
 			$diffs = $opt_c;
 		} else {
-            echo_Exception('Unknown call format to patch_make.');
+			echo_Exception('Unknown call format to patch_make.');
 		}
 
 		if ( count($diffs) === 0) {
@@ -1928,7 +1928,7 @@ class diff_match_patch {
 			$m = null;
 			preg_match('/^@@ -(\d+),?(\d*) \+(\d+),?(\d*) @@$/',$text[$textPointer],$m);
 			if (!$m) {
-	            echo_Exception('Invalid patch string: ' . $text[$textPointer]);
+				echo_Exception('Invalid patch string: ' . $text[$textPointer]);
 			}
 			$patch = new patch_obj();
 			array_push($patches, $patch);
@@ -1979,7 +1979,7 @@ class diff_match_patch {
 					// Blank line?  Whatever.
 				} else {
 					// WTF?
-		            echo_Exception('Invalid patch mode "' . $sign . '" in: ' . $line);
+					echo_Exception('Invalid patch mode "' . $sign . '" in: ' . $line);
 				}
 				$textPointer++;
 			}
@@ -2063,7 +2063,7 @@ function mb_ord($v){
 	return ord($v);
 }
 function mb_chr($num){
-   	return chr($num);
+	return chr($num);
 }
 
 function encodeURI($v) {
