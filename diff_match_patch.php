@@ -1179,7 +1179,7 @@ class diff_match_patch {
 				$text[$x] = $diffs[$x][1];
 			}
 		}
-		return implode($text);
+		return implode('',$text);
 	}
 
 	/**
@@ -1265,7 +1265,7 @@ class diff_match_patch {
 							DIFF_INSERT,
 							decodeURI($param)
 						);
-					} catch (Exeption $ex) {
+					} catch (Exception $ex) {
 						echo_Exception('Illegal escape in diff_fromDelta: ' . $param);
 						// Malformed URI sequence.
 					}
@@ -1959,7 +1959,7 @@ class diff_match_patch {
 				$sign = $text[$textPointer][0];
 				try {
 					$line = decodeURI( mb_substr($text[$textPointer],1) );
-				} catch (Exeption $ex) {
+				} catch (Exception $ex) {
 					// Malformed URI sequence.
 					throw new Exception('Illegal escape in patch_fromText: ' . $line);
 				}
@@ -2083,8 +2083,8 @@ $uri_translateFrom = 	array("\n", '`',  '[',  ']',  '\\', '^',  '|',  '{',  '}',
 $uri_translateTo = 		array('%0A','%60','%5B','%5D','%5C','%5E','%7C','%7B','%7D','%22','%3C','%3E');
 
 function echo_Exception($str){
-	global $lastExeption;
-	$lastExeption = $str;
+	global $lastException;
+	$lastException = $str;
 	echo $str;
 }
 //mb_internal_encoding("UTF-8");
