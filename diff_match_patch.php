@@ -2066,21 +2066,27 @@ function mb_chr($num){
 	return chr($num);
 }
 
-function encodeURI($v) {
-//	return $v;
-	global $uri_translateFrom, $uri_translateTo;
-	$v = str_replace('%','%25',$v);
-	$v = str_replace($uri_translateFrom,$uri_translateTo,$v);
-	return $v;
+function encodeURI($url) {
+	// @see http://stackoverflow.com/questions/4929584/encodeuri-in-php#answer-6059053
+    // http://php.net/manual/en/function.rawurlencode.php
+    // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/encodeURI
+    $reserved = array(
+        '%2D'=>'-','%5F'=>'_','%2E'=>'.','%21'=>'!', 
+        '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')'
+    );
+    $unescaped = array(
+        '%3B'=>';','%2C'=>',','%2F'=>'/','%3F'=>'?','%3A'=>':',
+        '%40'=>'@','%26'=>'&','%3D'=>'=','%2B'=>'+','%24'=>'$'
+    );
+    $score = array(
+        '%23'=>'#'
+    );
+    return strtr(rawurlencode($url), array_merge($reserved,$unescaped,$score));
 }
+
 function decodeURI($v) {
-//	return $v;
-	global $uri_translateFrom, $uri_translateTo;
-	$v = str_replace('%25','%',$v);
-	return str_replace($uri_translateTo,$uri_translateFrom,$v);
+	return rawurldecode($v);
 }
-$uri_translateFrom = 	array("\n", '`',  '[',  ']',  '\\', '^',  '|',  '{',  '}',  '"',  '<',  '>', );
-$uri_translateTo = 		array('%0A','%60','%5B','%5D','%5C','%5E','%7C','%7B','%7D','%22','%3C','%3E');
 
 function echo_Exception($str){
 	global $lastException;
