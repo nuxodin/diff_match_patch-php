@@ -2066,22 +2066,18 @@ function mb_chr($num){
 	return chr($num);
 }
 
+/**
+ * as in javascript encodeURI() following the MDN description
+ *
+ * @link https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/encodeURI
+ * @param $url
+ * @return string
+ */
 function encodeURI($url) {
-	// @see http://stackoverflow.com/questions/4929584/encodeuri-in-php#answer-6059053
-    // http://php.net/manual/en/function.rawurlencode.php
-    // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/encodeURI
-    $reserved = array(
-        '%2D'=>'-','%5F'=>'_','%2E'=>'.','%21'=>'!', 
-        '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')'
-    );
-    $unescaped = array(
-        '%3B'=>';','%2C'=>',','%2F'=>'/','%3F'=>'?','%3A'=>':',
-        '%40'=>'@','%26'=>'&','%3D'=>'=','%2B'=>'+','%24'=>'$'
-    );
-    $score = array(
-        '%23'=>'#'
-    );
-    return strtr(rawurlencode($url), array_merge($reserved,$unescaped,$score));
+    return strtr(rawurlencode($url), array (
+        '%3B' => ';', '%2C' => ',', '%2F' => '/', '%3F' => '?', '%3A' => ':', '%40' => '@', '%26' => '&', '%3D' => '=',
+        '%2B' => '+', '%24' => '$', '%21' => '!', '%2A' => '*', '%27' => '\'', '%28' => '(', '%29' => ')', '%23' => '#',
+    ));
 }
 
 function decodeURI($v) {
