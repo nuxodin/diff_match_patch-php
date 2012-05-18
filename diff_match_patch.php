@@ -796,7 +796,7 @@ class diff_match_patch {
 				$bestEdit = $edit;
 				$bestEquality2 = $equality2;
 				$bestScore = $this->diff_cleanupSemanticScore($equality1, $edit) + $this->diff_cleanupSemanticScore($edit, $equality2);
-				while ($edit[0] === $equality2[0]) {
+				while (isset($equality2[0]) && $edit[0] === $equality2[0]) {
 					$equality1 .= $edit[0];
 					$edit = mb_substr($edit, 1) . $equality2[0];
 					$equality2 = mb_substr($equality2, 1);
