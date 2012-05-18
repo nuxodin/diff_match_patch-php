@@ -613,7 +613,7 @@ function testDiffMain() {
 	assertEquivalent(array(array(DIFF_DELETE, 'Apple'), array(DIFF_INSERT, 'Banana'), array(DIFF_EQUAL, 's are a'), array(DIFF_INSERT, 'lso'), array(DIFF_EQUAL, ' fruit.')), dmp()->diff_main('Apples are a fruit.', 'Bananas are also fruit.', false));
 	
 	$u0680 = mb_chr(0*4096 + 6*256 + 8*16 + 0);
-	assertEquivalent(array(array(DIFF_DELETE, 'a'), array(DIFF_INSERT, "$u0680"), array(DIFF_EQUAL, 'x'), array(DIFF_DELETE, "\t"), array(DIFF_INSERT, "\0")), dmp()->diff_main("ax\t", "$u0680x\0", false));
+	assertEquivalent(array(array(DIFF_DELETE, 'a'), array(DIFF_INSERT, "$u0680"), array(DIFF_EQUAL, 'x'), array(DIFF_DELETE, "\t"), array(DIFF_INSERT, "\0")), dmp()->diff_main("ax\t", "{$u0680}x\0", false));
 
 	// Overlaps.
 	assertEquivalent(array(array(DIFF_DELETE, '1'), array(DIFF_EQUAL, 'a'), array(DIFF_DELETE, 'y'), array(DIFF_EQUAL, 'b'), array(DIFF_DELETE, '2'), array(DIFF_INSERT, 'xab')), dmp()->diff_main('1ayb2', 'abxab', false));
