@@ -609,7 +609,7 @@ function testDiffMain() {
 
 	// zero-check ("0" == false in PHP)
 	assertEquivalent(array(array(DIFF_DELETE, '0'), array(DIFF_INSERT, '1')), dmp()->diff_main('0', '1', false));
-	return;
+	
 	assertEquivalent(array(array(DIFF_DELETE, 'Apple'), array(DIFF_INSERT, 'Banana'), array(DIFF_EQUAL, 's are a'), array(DIFF_INSERT, 'lso'), array(DIFF_EQUAL, ' fruit.')), dmp()->diff_main('Apples are a fruit.', 'Bananas are also fruit.', false));
 	
 	$u0680 = mb_chr(0*4096 + 6*256 + 8*16 + 0);
