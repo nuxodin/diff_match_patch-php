@@ -245,7 +245,7 @@ class diff_match_patch {
 
 							$pointer = $pointer - $count_delete - $count_insert;
 							for ($j = count($a) - 1; $j >= 0; $j--) {
-								array_splice($diffs, $pointer, 0, $a[$j]);
+								array_splice($diffs, $pointer, 0, array($a[$j]));
 							}
 							$pointer = $pointer +count($a);
 						}
@@ -257,7 +257,7 @@ class diff_match_patch {
 				}
 				$pointer++;
 			}
-			$diffs = array_pop($diffs); // Remove the dummy entry at the end.
+			array_pop($diffs); // Remove the dummy entry at the end.
 		}
 		return $diffs;
 	}
