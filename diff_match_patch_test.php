@@ -244,7 +244,7 @@ function testDiffLinesToChars() {
 	assertEquals($n, count($lineList) );
 	$lines = implode('', $lineList);
 	$chars = implode('', $charList);
-	assertEquals($n, strlen($chars) );
+	assertEquals($n, mb_strlen($chars) );
 	array_unshift($lineList,'');
 	assertEquivalent(array($chars, '', $lineList), dmp()->diff_linesToChars($lines, ''));
 }
@@ -266,7 +266,7 @@ function testDiffCharsToLines() {
 	assertEquals($n, count($lineList));
 	$lines = implode('', $lineList);
 	$chars = implode('', $charList);
-	assertEquals($n, strlen($chars) );
+	assertEquals($n, mb_strlen($chars) );
 	array_unshift($lineList,'');
 	$diffs = array(array(DIFF_DELETE, $chars));
 	dmp()->diff_charsToLines($diffs, $lineList);
