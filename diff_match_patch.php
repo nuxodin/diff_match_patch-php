@@ -1237,7 +1237,7 @@ class diff_match_patch {
 					break;
 			}
 		}
-		return implode("\t", $text);
+		return str_replace('%20', ' ', implode("\t", $text));
 	}
 
 	/**
@@ -2042,7 +2042,7 @@ class patch_obj {
 			}
 			$text[$x +1] = $op . encodeURI($this->diffs[$x][1]) . "\n";
 		}
-		return implode('',$text);
+		return str_replace('%20', ' ', implode('',$text));
 	}
 	function __toString(){
 		return $this->toString();
