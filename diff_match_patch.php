@@ -398,7 +398,7 @@ class diff_match_patch {
 						$footsteps[$footstep] = $d;
 					}
 				}
-				while (!$done && ($x < $text1_length) && ($y < $text2_length) && ($text1[$x] == $text2[$y]) ) {
+				while (!$done && ($x < $text1_length) && ($y < $text2_length) && (mb_substr($text1, $x, 1) == mb_substr($text2, $y, 1)) ) {
 					$x++;
 					$y++;
 					if ($doubleEnd) {
@@ -444,7 +444,7 @@ class diff_match_patch {
 					if ($front) {
 						$footsteps[$footstep] = $d;
 					}
-					while (!$done && $x < $text1_length && $y < $text2_length && $text1[$text1_length - $x -1] == $text2[$text2_length - $y -1] ) {
+					while (!$done && $x < $text1_length && $y < $text2_length && mb_substr($text1, $text1_length - $x -1, 1) == mb_substr($text2, $text2_length - $y -1, 1) ) {
 						$x++;
 						$y++;
 						$footstep = ($text1_length - $x) . ',' . ($text2_length - $y);
