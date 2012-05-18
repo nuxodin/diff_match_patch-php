@@ -1478,10 +1478,18 @@ class diff_match_patch {
 	 * @private
 	 */
 	function patch_addContext($patch, $text) {
-		$pattern = mb_substr($text, $patch->start2, ($patch->start2 + $patch->length1) - $patch->start2 );
+		$pattern = mb_substr($text, $patch->start2, $patch->length1 );
+		$previousPattern = null;
 		$padding = 0;
-		while (mb_strpos($text, $pattern) !== mb_strrpos($text, $pattern) && mb_strlen($pattern) < Match_MaxBits - $this->Patch_Margin - $this->Patch_Margin ) {
+		$i = 0;
+		while (
+			(   mb_strlen($pattern) === 0 // Javascript's indexOf/lastIndexOd return 0/strlen respectively if pattern = ''
+			 || mb_strpos($text, $pattern) !== mb_strrpos($text, $pattern)
+			)
+			&& $pattern !== $previousPattern // avoid infinte loop
+			&& mb_strlen($pattern) < Match_MaxBits - $this->Patch_Margin - $this->Patch_Margin ) {
 			$padding += $this->Patch_Margin;
+			$previousPattern = $pattern;
 			$pattern = mb_substr($text, max($patch->start2 - $padding,0), ($patch->start2 + $patch->length1 + $padding) - max($patch->start2 - $padding,0) );
 		}
 		// Add one chunk for good luck.
