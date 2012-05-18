@@ -109,10 +109,10 @@ class diff_match_patch {
 		$diffs = $this->diff_compute($text1, $text2, $checklines);
 
 		// Restore the prefix and suffix
-		if ($commonprefix) {
+		if ($commonprefix !== '') {
 			array_unshift($diffs, array ( DIFF_EQUAL, $commonprefix ));
 		}
-		if ($commonsuffix) {
+		if ($commonsuffix !== '') {
 			array_push($diffs, array ( DIFF_EQUAL, $commonsuffix ));
 		}
 		$this->diff_cleanupMerge($diffs);
@@ -132,12 +132,12 @@ class diff_match_patch {
 	 */
 	function diff_compute($text1, $text2, $checklines) {
 
-		if (!$text1) {
+		if ($text1 === '') {
 			// Just add some text (speedup)
 			return array ( array ( DIFF_INSERT, $text2 ) );
 		}
 
-		if (!$text2) {
+		if ($text2 === '') {
 			// Just delete some text (speedup)
 			return array ( array ( DIFF_DELETE, $text1 ) );
 		}
@@ -784,7 +784,7 @@ class diff_match_patch {
 
 				// First, shift the edit as far left as possible.
 				$commonOffset = $this->diff_commonSuffix($equality1, $edit);
-				if ($commonOffset) {
+				if ($commonOffset !== '') {
 					$commonString = mb_substr($edit, mb_strlen($edit) - $commonOffset);
 					$equality1 = mb_substr($equality1, 0, mb_strlen($equality1) - $commonOffset);
 					$edit = $commonString . mb_substr($edit, 0, mb_strlen($edit) - $commonOffset);
@@ -1926,7 +1926,7 @@ class diff_match_patch {
 	 */
 	function patch_fromText($textline) {
 		$patches = array();
-		if (!$textline) {
+		if ($textline === '') {
 			return $patches;
 		}
 		$text = explode("\n",$textline);
