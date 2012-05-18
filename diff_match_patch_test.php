@@ -24,6 +24,8 @@ require_once('diff_match_patch.php');
  */
 
 
+mb_internal_encoding('UTF-8');
+
 $test_good = 0;
 $test_bad = 0;
 
@@ -73,8 +75,6 @@ function runTests() {
 		$test();
 	}
 }
-
-
 
 $startTime = microtime(true);
 runTests();
