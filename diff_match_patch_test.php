@@ -56,7 +56,7 @@ function runTests() {
 		,'testDiffCleanupSemanticLossless', 'testDiffCleanupSemantic'
 		,'testDiffCleanupEfficiency', 'testDiffPrettyHtml', 'testDiffText'
 		,'testDiffDelta', 'testDiffXIndex', 'testDiffLevenshtein', 'testDiffPath'
-		//,'testDiffMain'
+		,'testDiffMain'
 
 		,'testMatchAlphabet'
 				,'testMatchBitap'
