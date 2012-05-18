@@ -1361,7 +1361,7 @@ class diff_match_patch {
 		}
 
 		// What about in the other direction? (speedup)
-		$best_loc = mb_strrpos( $text, $pattern, $loc + mb_strlen($pattern) );
+		$best_loc = mb_strrpos( $text, $pattern, min($loc + mb_strlen($pattern), mb_strlen($text)) );
 		if ($best_loc !== false) {
 			$score_threshold = min($this->match_bitapScore(0, $best_loc, $pattern, $loc), $score_threshold);
 		}
