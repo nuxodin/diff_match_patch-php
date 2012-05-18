@@ -352,7 +352,7 @@ class diff_match_patch {
 	 */
 	function diff_map($text1, $text2) {
 		// Don't run for too long.
-		$ms_end = microtime(true)*1000 + $this->Diff_Timeout;
+		$ms_end = microtime(true) + $this->Diff_Timeout;
 		
 		// Cache the text lengths to prevent multiple calls.
 		$text1_length = mb_strlen($text1);
@@ -377,7 +377,7 @@ class diff_match_patch {
 		$front = ($text1_length + $text2_length) % 2;
 		for ($d = 0; $d < $max_d; $d++) {
 			// Bail out if timeout reached.
-			if ($this->Diff_Timeout > 0 && microtime(true)*1000 > $ms_end) {
+			if ($this->Diff_Timeout > 0 && microtime(true) > $ms_end) {
 				return null; // zzz
 			}
 
