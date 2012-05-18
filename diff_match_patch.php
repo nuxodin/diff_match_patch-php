@@ -2080,8 +2080,19 @@ function encodeURI($url) {
     ));
 }
 
-function decodeURI($v) {
-	return rawurldecode($v);
+function decodeURI($encoded) {
+	static $dontDecode;
+	if (!$dontDecode) {
+		$table = array (
+			'%3B' => ';', '%2C' => ',', '%2F' => '/', '%3F' => '?', '%3A' => ':', '%40' => '@', '%26' => '&', '%3D' => '=',
+			'%2B' => '+', '%24' => '$', '%21' => '!', '%2A' => '*', '%27' => '\'', '%28' => '(', '%29' => ')', '%23' => '#',
+		);
+		$dontDecode = array();
+		foreach ($table as $k => $v) {
+			$dontDecode[$k] = encodeURI($k);
+		}
+	}
+	return rawurldecode(strtr($encoded, $dontDecode));
 }
 
 function echo_Exception($str){
