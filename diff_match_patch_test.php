@@ -503,9 +503,12 @@ function testDiffDelta() {
 	}
 
 	// Test deltas with special characters.
-	$diffs = array(array(DIFF_EQUAL, "\u0680 \x00 \t %"), array(DIFF_DELETE, "\u0681 \x01 \n ^"), array(DIFF_INSERT, "\u0682 \x02 \\ |"));
+	$u0680 = mb_chr(0*4096 + 6*256 + 8*16 + 0);
+	$u0681 = mb_chr(0*4096 + 6*256 + 8*16 + 1);
+	$u0682 = mb_chr(0*4096 + 6*256 + 8*16 + 2);
+	$diffs = array(array(DIFF_EQUAL, "$u0680 \x00 \t %"), array(DIFF_DELETE, "$u0681 \x01 \n ^"), array(DIFF_INSERT, "$u0682 \x02 \\ |"));
 	$text1 = dmp()->diff_text1($diffs);
-	assertEquals("\u0680 \x00 \t %\u0681 \x01 \n ^", $text1);
+	assertEquals("$u0680 \x00 \t %$u0681 \x01 \n ^", $text1);
 
 	$delta = dmp()->diff_toDelta($diffs);
 	assertEquals("=7\t-7\t+%DA%82 %02 %5C %7C", $delta);
@@ -605,8 +608,9 @@ function testDiffMain() {
 	assertEquivalent(array(array(DIFF_DELETE, 'a'), array(DIFF_INSERT, 'b')), dmp()->diff_main('a', 'b', false));
 
 	assertEquivalent(array(array(DIFF_DELETE, 'Apple'), array(DIFF_INSERT, 'Banana'), array(DIFF_EQUAL, 's are a'), array(DIFF_INSERT, 'lso'), array(DIFF_EQUAL, ' fruit.')), dmp()->diff_main('Apples are a fruit.', 'Bananas are also fruit.', false));
-
-	assertEquivalent(array(array(DIFF_DELETE, 'a'), array(DIFF_INSERT, "\u0680"), array(DIFF_EQUAL, 'x'), array(DIFF_DELETE, "\t"), array(DIFF_INSERT, "\0")), dmp()->diff_main("ax\t", "\u0680x\0", false));
+	
+	$u0680 = mb_chr(0*4096 + 6*256 + 8*16 + 0);
+	assertEquivalent(array(array(DIFF_DELETE, 'a'), array(DIFF_INSERT, "$u0680"), array(DIFF_EQUAL, 'x'), array(DIFF_DELETE, "\t"), array(DIFF_INSERT, "\0")), dmp()->diff_main("ax\t", "$u0680x\0", false));
 
 	// Overlaps.
 	assertEquivalent(array(array(DIFF_DELETE, '1'), array(DIFF_EQUAL, 'a'), array(DIFF_DELETE, 'y'), array(DIFF_EQUAL, 'b'), array(DIFF_DELETE, '2'), array(DIFF_INSERT, 'xab')), dmp()->diff_main('1ayb2', 'abxab', false));
