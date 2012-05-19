@@ -109,10 +109,10 @@ class diff_match_patch {
 		$diffs = $this->diff_compute($text1, $text2, $checklines);
 
 		// Restore the prefix and suffix
-		if ($commonprefix) {
+		if ($commonprefix !== '') {
 			array_unshift($diffs, array ( DIFF_EQUAL, $commonprefix ));
 		}
-		if ($commonsuffix) {
+		if ($commonsuffix !== '') {
 			array_push($diffs, array ( DIFF_EQUAL, $commonsuffix ));
 		}
 		$this->diff_cleanupMerge($diffs);
@@ -132,12 +132,12 @@ class diff_match_patch {
 	 */
 	function diff_compute($text1, $text2, $checklines) {
 
-		if (!$text1) {
+		if ($text1 === '') {
 			// Just add some text (speedup)
 			return array ( array ( DIFF_INSERT, $text2 ) );
 		}
 
-		if (!$text2) {
+		if ($text2 === '') {
 			// Just delete some text (speedup)
 			return array ( array ( DIFF_DELETE, $text1 ) );
 		}
@@ -245,7 +245,7 @@ class diff_match_patch {
 
 							$pointer = $pointer - $count_delete - $count_insert;
 							for ($j = count($a) - 1; $j >= 0; $j--) {
-								array_splice($diffs, $pointer, 0, $a[$j]);
+								array_splice($diffs, $pointer, 0, array($a[$j]));
 							}
 							$pointer = $pointer +count($a);
 						}
@@ -257,7 +257,7 @@ class diff_match_patch {
 				}
 				$pointer++;
 			}
-			$diffs = array_pop($diffs); // Remove the dummy entry at the end.
+			array_pop($diffs); // Remove the dummy entry at the end.
 		}
 		return $diffs;
 	}
@@ -352,7 +352,8 @@ class diff_match_patch {
 	 */
 	function diff_map($text1, $text2) {
 		// Don't run for too long.
-		$ms_end = microtime(true)*1000 + $this->Diff_Timeout*1000;
+		$ms_end = microtime(true) + $this->Diff_Timeout;
+		
 		// Cache the text lengths to prevent multiple calls.
 		$text1_length = mb_strlen($text1);
 		$text2_length = mb_strlen($text2);
@@ -376,8 +377,8 @@ class diff_match_patch {
 		$front = ($text1_length + $text2_length) % 2;
 		for ($d = 0; $d < $max_d; $d++) {
 			// Bail out if timeout reached.
-			if ($this->Diff_Timeout > 0 && microtime(true)*1000 > $ms_end) {
-				//return null; zzz
+			if ($this->Diff_Timeout > 0 && microtime(true) > $ms_end) {
+				return null; // zzz
 			}
 
 			// Walk the front path one step.
@@ -398,7 +399,7 @@ class diff_match_patch {
 						$footsteps[$footstep] = $d;
 					}
 				}
-				while (!$done && ($x < $text1_length) && ($y < $text2_length) && ($text1[$x] == $text2[$y]) ) {
+				while (!$done && ($x < $text1_length) && ($y < $text2_length) && (mb_substr($text1, $x, 1) == mb_substr($text2, $y, 1)) ) {
 					$x++;
 					$y++;
 					if ($doubleEnd) {
@@ -444,7 +445,7 @@ class diff_match_patch {
 					if ($front) {
 						$footsteps[$footstep] = $d;
 					}
-					while (!$done && $x < $text1_length && $y < $text2_length && $text1[$text1_length - $x -1] == $text2[$text2_length - $y -1] ) {
+					while (!$done && $x < $text1_length && $y < $text2_length && mb_substr($text1, $text1_length - $x -1, 1) == mb_substr($text2, $text2_length - $y -1, 1) ) {
 						$x++;
 						$y++;
 						$footstep = ($text1_length - $x) . ',' . ($text2_length - $y);
@@ -784,7 +785,7 @@ class diff_match_patch {
 
 				// First, shift the edit as far left as possible.
 				$commonOffset = $this->diff_commonSuffix($equality1, $edit);
-				if ($commonOffset) {
+				if ($commonOffset !== '') {
 					$commonString = mb_substr($edit, mb_strlen($edit) - $commonOffset);
 					$equality1 = mb_substr($equality1, 0, mb_strlen($equality1) - $commonOffset);
 					$edit = $commonString . mb_substr($edit, 0, mb_strlen($edit) - $commonOffset);
@@ -796,7 +797,7 @@ class diff_match_patch {
 				$bestEdit = $edit;
 				$bestEquality2 = $equality2;
 				$bestScore = $this->diff_cleanupSemanticScore($equality1, $edit) + $this->diff_cleanupSemanticScore($edit, $equality2);
-				while ($edit[0] === $equality2[0]) {
+				while (isset($equality2[0]) && $edit[0] === $equality2[0]) {
 					$equality1 .= $edit[0];
 					$edit = mb_substr($edit, 1) . $equality2[0];
 					$equality2 = mb_substr($equality2, 1);
@@ -1237,7 +1238,7 @@ class diff_match_patch {
 					break;
 			}
 		}
-		return implode("\t", $text);
+		return str_replace('%20', ' ', implode("\t", $text));
 	}
 
 	/**
@@ -1361,7 +1362,7 @@ class diff_match_patch {
 		}
 
 		// What about in the other direction? (speedup)
-		$best_loc = mb_strrpos( $text, $pattern, $loc + mb_strlen($pattern) );
+		$best_loc = mb_strrpos( $text, $pattern, min($loc + mb_strlen($pattern), mb_strlen($text)) );
 		if ($best_loc !== false) {
 			$score_threshold = min($this->match_bitapScore(0, $best_loc, $pattern, $loc), $score_threshold);
 		}
@@ -1478,10 +1479,18 @@ class diff_match_patch {
 	 * @private
 	 */
 	function patch_addContext($patch, $text) {
-		$pattern = mb_substr($text, $patch->start2, ($patch->start2 + $patch->length1) - $patch->start2 );
+		$pattern = mb_substr($text, $patch->start2, $patch->length1 );
+		$previousPattern = null;
 		$padding = 0;
-		while (mb_strpos($text, $pattern) !== mb_strrpos($text, $pattern) && mb_strlen($pattern) < Match_MaxBits - $this->Patch_Margin - $this->Patch_Margin ) {
+		$i = 0;
+		while (
+			(   mb_strlen($pattern) === 0 // Javascript's indexOf/lastIndexOd return 0/strlen respectively if pattern = ''
+			 || mb_strpos($text, $pattern) !== mb_strrpos($text, $pattern)
+			)
+			&& $pattern !== $previousPattern // avoid infinte loop
+			&& mb_strlen($pattern) < Match_MaxBits - $this->Patch_Margin - $this->Patch_Margin ) {
 			$padding += $this->Patch_Margin;
+			$previousPattern = $pattern;
 			$pattern = mb_substr($text, max($patch->start2 - $padding,0), ($patch->start2 + $patch->length1 + $padding) - max($patch->start2 - $padding,0) );
 		}
 		// Add one chunk for good luck.
@@ -1918,7 +1927,7 @@ class diff_match_patch {
 	 */
 	function patch_fromText($textline) {
 		$patches = array();
-		if (!$textline) {
+		if ($textline === '') {
 			return $patches;
 		}
 		$text = explode("\n",$textline);
@@ -2042,7 +2051,7 @@ class patch_obj {
 			}
 			$text[$x +1] = $op . encodeURI($this->diffs[$x][1]) . "\n";
 		}
-		return implode('',$text);
+		return str_replace('%20', ' ', implode('',$text));
 	}
 	function __toString(){
 		return $this->toString();
@@ -2057,13 +2066,16 @@ define('Match_MaxBits', PHP_INT_SIZE * 8);
 
 
 function charCodeAt($str, $pos) {
-	return mb_ord($str[$pos]);
+	return mb_ord(mb_substr($str, $pos, 1));
 }
-function mb_ord($v){
-	return ord($v);
+function mb_ord($v) {
+	$k = mb_convert_encoding($v, 'UCS-2LE', 'UTF-8'); 
+	$k1 = ord(substr($k, 0, 1)); 
+	$k2 = ord(substr($k, 1, 1)); 
+	return $k2 * 256 + $k1; 
 }
 function mb_chr($num){
-	return chr($num);
+	return mb_convert_encoding('&#'.intval($num).';', 'UTF-8', 'HTML-ENTITIES');
 }
 
 /**
@@ -2080,8 +2092,19 @@ function encodeURI($url) {
     ));
 }
 
-function decodeURI($v) {
-	return rawurldecode($v);
+function decodeURI($encoded) {
+	static $dontDecode;
+	if (!$dontDecode) {
+		$table = array (
+			'%3B' => ';', '%2C' => ',', '%2F' => '/', '%3F' => '?', '%3A' => ':', '%40' => '@', '%26' => '&', '%3D' => '=',
+			'%2B' => '+', '%24' => '$', '%21' => '!', '%2A' => '*', '%27' => '\'', '%28' => '(', '%29' => ')', '%23' => '#',
+		);
+		$dontDecode = array();
+		foreach ($table as $k => $v) {
+			$dontDecode[$k] = encodeURI($k);
+		}
+	}
+	return rawurldecode(strtr($encoded, $dontDecode));
 }
 
 function echo_Exception($str){
